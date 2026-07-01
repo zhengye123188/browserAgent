@@ -125,7 +125,7 @@ class BrowserSession:
         return result.get('result', {}).get('value', '')
 
     async def get_html(self) -> str:
-        """获取当前页面完整 HTML"""
+        """获取当前页面完整HTML"""
         assert self._cdp_client, '浏览器未启动，先调用 start()'
         result = await self._cdp_client.send.Runtime.evaluate(
             params={'expression': 'document.documentElement.outerHTML'}
