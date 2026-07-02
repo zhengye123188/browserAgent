@@ -1,8 +1,4 @@
 from pydantic import BaseModel, Field
-
-
-
-
 class BrowserProfile(BaseModel):
     """Chrome 浏览器启动配置
 

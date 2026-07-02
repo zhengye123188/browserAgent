@@ -132,6 +132,14 @@ class BrowserSession:
         )
         return result.get('result', {}).get('value', '')
 
+    async def get_current_url(self) -> str:
+        """获取当前页面的 URL"""
+        assert self._cdp_client, '浏览器未启动，先调用 start()'
+        result = await self._cdp_client.send.Runtime.evaluate(
+            params={'expression': 'window.location.href'}
+        )
+        return result.get('result', {}).get('value', '')
+
 
 
 
