@@ -10,9 +10,9 @@ from my_browser_use.tools.views import (
 class Tools:
     """操作注册表：收集所有可用 Action，负责查找和执行"""
 
-    def __init__(self, browser_session: BrowserSession):
+    def __init__(self, browser_session: BrowserSession, dom_service: DomService | None = None):
         self.browser_session = browser_session
-        self.dom_service = DomService(browser_session)
+        self.dom_service = dom_service or DomService(browser_session)
         self._registry: dict[str, type[ActionModel]] = {}
         self._register_actions()
 

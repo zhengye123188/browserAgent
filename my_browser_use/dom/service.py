@@ -19,7 +19,7 @@ class DomService:
     SHOW_ATTRS = {"type", "placeholder", "href", "value", "name", "id"}
 
     def __init__(self, browser_session: BrowserSession):
-        self.selector_map = dict[int, EnhancedDOMTreeNode] = {}
+        self.selector_map: dict[int, EnhancedDOMTreeNode] = {}
         self.browser_session = browser_session
 
     @staticmethod
@@ -35,7 +35,7 @@ class DomService:
         # ============================================================
         # 1. DOM.getDocument — 完整 DOM 树
         # ============================================================
-        dom_result=await cdp.send.DOM.get_all_trees(
+        dom_result=await cdp.send.DOM.getDocument(
             params={'depth':-1,'pierce':True}
         )
         dom_tree = dom_result['root']

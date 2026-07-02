@@ -20,6 +20,7 @@ class BaseChatModel(ABC):
         messages,  # list[SystemMessage | UserMessage | AssistantMessage | ToolMessage]
         tools: list[dict] | None = None,
         output_format: type | None = None,
+        stream_callback=None,  # Callable[[str], None] | None
     ):
         """
         调用 LLM，返回决策结果。

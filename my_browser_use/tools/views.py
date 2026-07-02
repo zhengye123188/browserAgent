@@ -254,9 +254,7 @@ class GoToUrlAction(ActionModel):
 
     async def execute(self, session, dom_service) -> ActionResult:
         try:
-            await session._cdp_client.send.Page.navigate(
-                params={'url': self.url}
-            )
+            await session.navigate(self.url)
             return ActionResult(
                 success=True,
                 is_done=False,
