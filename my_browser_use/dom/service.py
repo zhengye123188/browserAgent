@@ -19,6 +19,7 @@ class DomService:
     SHOW_ATTRS = {"type", "placeholder", "href", "value", "name", "id"}
 
     def __init__(self, browser_session: BrowserSession):
+        self.selector_map = dict[int, EnhancedDOMTreeNode] = {}
         self.browser_session = browser_session
 
     @staticmethod
@@ -235,4 +236,5 @@ class DomService:
 
         # 启动深度优先遍历
         dfs(root)
+        self.selector_map = selector_map
         return "\n".join(output_lines), selector_map

@@ -31,3 +31,12 @@ class EnhancedDOMTreeNode(BaseModel):
               if self.node_type == 1:
                       return self.node_name
               return None
+
+      def get_all_text(self):
+          """递归收集自己和所有子节点的文本内容"""
+          parts = []
+          if self.node_value and self.node_type == 3:  # 3 = 文本节点
+              parts.append(self.node_value)
+          for child in self.children_nodes:
+              parts.append(child.get_all_text())
+          return "".join(parts)
