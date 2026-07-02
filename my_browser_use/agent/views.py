@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from pydantic.dataclasses import dataclass
+from pydantic import BaseModel, Field, create_model
+from dataclasses import dataclass
 
 from my_browser_use.browser.views import BrowserStateHistory
 from my_browser_use.tools.views import ActionModel, ActionResult
@@ -7,11 +7,24 @@ from my_browser_use.tools.views import ActionModel, ActionResult
 
 class AgentOutput(BaseModel):
     """LLM 的 JSON 输出格式"""
-    thinking: str | None=None          # 思维链，可选
-    evaluation_previous_goal: str | None=None  # 上一步目标评估
-    memory: str | None=None            # 记忆（跨步骤的关键信息）
-    next_goal: str | None=None         # 下一步目标
+    thinking: str | None = None          # 思维链，可选
+    evaluation_previous_goal: str | None = None  # 上一步目标评估
+    memory: str | None = None            # 记忆（跨步骤的关键信息）
+    next_goal: str | None = None         # 下一步目标
     action: list[ActionModel]     # 要执行的动作列表
+
+    @staticmethod
+    def type_with_custom_actions(action_types: type) -> type['AgentOutput']:
+        """用具体的 Action 联合类型替换基类 action 字段，让 LLM 的 JSON Schema 包含所有字段"""
+        return create_model(
+            'AgentOutput',
+            __base__=AgentOutput,
+            action=(
+                list[action_types],
+                Field(..., description='List of actions to execute', min_length=1),
+            ),
+            __module__=AgentOutput.__module__,
+        )
 
 
 class AgentState(BaseModel):

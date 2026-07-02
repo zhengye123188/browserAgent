@@ -52,6 +52,11 @@ class Tools:
             dom_service=self.dom_service,
         )
 
+    # 获取所有注册的 Action 类（用于构建 Union 类型）
+    def get_action_classes(self) -> list[type[ActionModel]]:
+        """返回所有注册 Action 的类列表"""
+        return list(self._registry.values())
+
     # LLM Schema 生成
     def get_action_schemas(self) -> list[dict]:
         """生成所有 Action 的 JSON Schema，用于 LLM function calling

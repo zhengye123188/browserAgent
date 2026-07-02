@@ -53,8 +53,27 @@ class ChatOpenAICompatible(BaseChatModel):
 
     # -------- 核心 --------
 
-    async def ainvoke(self, messages, tools=None) -> dict:
+    async def ainvoke(self, messages, tools=None, output_format=None):
         openai_messages = self._convert_messages(messages)
+
+        # 结构化输出路线：LLM 直接返回符合 schema 的 JSON
+        if output_format is not None:
+            response = await self.client.chat.completions.create(
+                model=self.model,
+                messages=openai_messages,
+                response_format={
+                    'type': 'json_schema',
+                    'json_schema': {
+                        'name': 'agent_output',
+                        'schema': output_format.model_json_schema(),
+                        'strict': True,
+                    },
+                },
+            )
+            content = response.choices[0].message.content
+            return output_format.model_validate_json(content)
+
+        # Function calling 路线（保留原有逻辑）
         response = await self.client.chat.completions.create(
             model=self.model,
             messages=openai_messages,

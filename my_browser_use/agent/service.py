@@ -1,5 +1,6 @@
 import time
 import logging
+from typing import Union
 
 from my_browser_use.agent.views import (
 	AgentOutput,
@@ -52,6 +53,11 @@ class Agent:
 		self.history = AgentHistoryList()
 		self.dom_service = DomService(browser_session)
 
+		# 构建包含所有具体 Action 类型的 AgentOutput，让 LLM 的 JSON Schema 知道每个 action 有哪些字段
+		action_classes = self.tools.get_action_classes()
+		ActionUnion = Union[tuple(action_classes)]  # type: ignore
+		self.AgentOutput = AgentOutput.type_with_custom_actions(ActionUnion)
+
 	# =========================================================================
 	# 辅助方法
 	# =========================================================================
@@ -102,7 +108,7 @@ class Agent:
 		logger.debug(f'Step {self.state.n_steps}: calling LLM...')
 		response = await self.llm.ainvoke(
 			[system_msg, user_msg],
-			output_format=AgentOutput,
+			output_format=self.AgentOutput,
 		)
 		self.state.last_model_output = response
 		logger.debug(
